@@ -1,0 +1,32 @@
+<h1>Find Recipes</h1>
+
+<div class="search-form">
+  <%= form_tag(search_recipes_path, method: :get) do %>
+    <div>
+      <label>Enter ingredients you have (comma-separated):</label>
+      <%= text_field_tag :ingredients, params[:ingredients], placeholder: "e.g. flour, sugar, eggs" %>
+    </div>
+    <%= submit_tag "Find Recipes" %>
+  <% end %>
+</div>
+
+<% if @recipes.any? %>
+  <h2><%= @recipes.length %> Recipes Found</h2>
+  <div class="recipe-list">
+    <% @recipes.each do |recipe| %>
+      <div class="recipe-card">
+        <img src="<%= recipe.image %>" alt="<%= recipe.title %>" />
+        <div class="recipe-details">
+          <h3><%= link_to recipe.title, recipe_path(recipe) %></h3>
+          <p>
+            <strong>Rating:</strong> <%= recipe.ratings %>⭐<br>
+            <strong>Cook time:</strong> <%= recipe.cook_time %> mins<br>
+            <strong>Prep time:</strong> <%= recipe.prep_time %> mins
+          </p>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <p>No recipes found matching your ingredients. Try different ingredients!</p>
+<% end %>
