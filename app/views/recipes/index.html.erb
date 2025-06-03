@@ -1,12 +1,23 @@
 <h1>Find Recipes</h1>
 
 <div class="search-form">
-  <%= form_tag(search_recipes_path, method: :get) do %>
+  <%= form_with(url: search_recipes_path, method: :get, local: true) do |f| %>
     <div>
       <label>Enter ingredients you have (comma-separated):</label>
-      <%= text_field_tag :ingredients, params[:ingredients], placeholder: "e.g. flour, sugar, eggs" %>
+      <%= f.text_field :ingredients, value: params[:ingredients], placeholder: "e.g. flour, sugar, eggs" %>
     </div>
-    <%= submit_tag "Find Recipes" %>
+    <div class="sort-options">
+      <label>Sort by:</label>
+      <%= f.select :sort_by, 
+          [
+            ['Most matching ingredients (default)', 'relevance'],
+            ['Quickest to make', 'time_asc'],
+            ['Longest to make', 'time_desc']
+          ],
+          selected: params[:sort_by] || 'relevance'
+      %>
+    </div>
+    <%= f.submit "Find Recipes", class: "search-button" %>
   <% end %>
 </div>
 
@@ -15,13 +26,13 @@
   <div class="recipe-list">
     <% @recipes.each do |recipe| %>
       <div class="recipe-card">
-        <img src="<%= recipe.image %>" alt="<%= recipe.title %>" />
         <div class="recipe-details">
           <h3><%= link_to recipe.title, recipe_path(recipe) %></h3>
           <p>
             <strong>Rating:</strong> <%= recipe.ratings %>⭐<br>
-            <strong>Cook time:</strong> <%= recipe.cook_time %> mins<br>
-            <strong>Prep time:</strong> <%= recipe.prep_time %> mins
+            <strong>Total time:</strong> <%= recipe.prep_time + recipe.cook_time %> mins<br>
+            <strong>Prep time:</strong> <%= recipe.prep_time %> mins<br>
+            <strong>Cook time:</strong> <%= recipe.cook_time %> mins
           </p>
         </div>
       </div>
